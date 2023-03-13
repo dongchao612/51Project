@@ -1,0 +1,85 @@
+C51 COMPILER V9.54   MAIN                                                                  12/31/2022 21:54:10 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.h>
+   2          #include "Delay.h"
+   3          #include "Key.h"
+   4          #include "shumaguan.h"
+   5          #include "moto.h"
+   6          #include "IR.h"
+   7          
+   8          /*
+   9          直流电机
+  10                  永磁体       线圈  转换器
+  11          其他电机
+  12                  步进电机    舵机  无刷电机    空心杯电机
+  13          PWM 脉通宽度调制
+  14                  频率=1/Ts     占空比Ton/Ts 精度占空比变化步距 1% 2%...
+  15                  ____--____--____
+  16          */
+  17          unsigned char Speed=0,Command;
+  18          
+  19          
+  20          void main()
+  21          {
+  22   1              Moto_Init();
+  23   1              IR_Init();
+  24   1              Moto_Set_Speed(0);
+  25   1              while (1)
+  26   1              {
+  27   2                      if(IR_GetDataFlag())
+  28   2                      {
+  29   3                              Command=IR_GetCommand();
+  30   3                              if(Command==IR_0)
+  31   3                              {
+  32   4                                      Speed=0;
+  33   4                                      Moto_Set_Speed(0);
+  34   4                              }
+  35   3                              if(Command==IR_1)
+  36   3                              {
+  37   4                                      Speed=1;
+  38   4                                      Moto_Set_Speed(25);
+  39   4                              }
+  40   3                              if(Command==IR_2)
+  41   3                              {
+  42   4                                      Moto_Set_Speed(50);
+  43   4                                      Speed=2;
+  44   4                              }
+  45   3                              if(Command==IR_3)
+  46   3                              {
+  47   4                                      Moto_Set_Speed(75);
+  48   4                                      Speed=3;
+  49   4                              }
+  50   3                              if(Command==IR_4)
+  51   3                              {
+  52   4                                      Moto_Set_Speed(100);
+  53   4                                      Speed=4;
+  54   4                              }       
+C51 COMPILER V9.54   MAIN                                                                  12/31/2022 21:54:10 PAGE 2   
+
+  55   3                              
+  56   3                      }
+  57   2                      showNum(1,Speed);
+  58   2              }
+  59   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    100    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

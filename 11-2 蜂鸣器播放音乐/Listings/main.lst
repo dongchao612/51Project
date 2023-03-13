@@ -1,0 +1,149 @@
+C51 COMPILER V9.54   MAIN                                                                  12/26/2022 13:53:20 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.h>
+   2          #include "Delay.h"
+   3          #include "Key.h"
+   4          #include "timer0.h"
+   5          #include "shumaguan.h"
+   6          
+   7          /*
+   8          蜂鸣器(有源)  电信号 -> 声信号
+   9          分类
+  10                  有源蜂鸣器         内部自带震荡源
+  11                  无源蜂鸣器         内部不带震荡源 需要控制器提供脉冲才能发生
+  12          ULN
+  13          乐谱
+  14                  钢琴 相差8度 白黑半音 白白全音 # 升半音 b 降半音
+  15                          CDEFGAB cdefgab c1d1e1f1g1a1b1  c2d2e2f2g2a2b2
+  16                  A 220 a 440 a1 880  中间2^(1/12)分频
+  17          */
+  18          unsigned char keyNum;
+  19          #define SPEED 125
+  20          
+  21          #define P       0
+  22          
+  23          #define L1      1
+  24          #define L1_ 2
+  25          #define L2      3
+  26          #define L2_ 4
+  27          #define L3      5
+  28          #define L4      6
+  29          #define L4_ 7
+  30          #define L5      8
+  31          #define L5_ 9
+  32          #define L6      10
+  33          #define L6_ 11
+  34          #define L7      12
+  35          
+  36          #define M1      13
+  37          #define M1_ 14
+  38          #define M2      15
+  39          #define M2_ 16
+  40          #define M3      17
+  41          #define M4      18
+  42          #define M4_ 19
+  43          #define M5      20
+  44          #define M5_ 21
+  45          #define M6      22
+  46          #define M6_ 23
+  47          #define M7      24
+  48          
+  49          #define H1      25
+  50          #define H1_ 26
+  51          #define H2      27
+  52          #define H2_ 28
+  53          #define H3      29
+  54          #define H4      30
+C51 COMPILER V9.54   MAIN                                                                  12/26/2022 13:53:20 PAGE 2   
+
+  55          #define H4_ 31
+  56          #define H5      32
+  57          #define H5_ 33
+  58          #define H6      34
+  59          #define H6_ 35
+  60          #define H7      36
+  61          
+  62          sbit Buzzer_IO=P2^3;
+  63          unsigned int code FreqTable[]={ 
+  64                  0,
+  65                  63628,63731,63835,63928,64021,64103,64185,64260,64331,64400,64463,64528,
+  66                  64580,64633,64684,64732,64777,64820,64860,64898,64934,64968,65000,65030,
+  67                  65058,65085,65110,65134,65157,65178,65198,65217,65235,65252,65268,65283
+  68          };
+  69          unsigned int code Music[]={
+  70                  P,4,
+  71                  P,4,
+  72                  P,4,
+  73                  M6,2,
+  74                  M7,2,
+  75                  
+  76                  H1,4+2,
+  77                  M7,2,
+  78                  H1,4,
+  79                  H3,4,
+  80                  
+  81                  M7,4+4+4,
+  82                  M3,2,
+  83                  M3,2,
+  84                  
+  85                  0xFF,
+  86          };
+  87          unsigned int FreqSelect=0,MusicSelect=0;
+  88          void main()
+  89          {
+  90   1              Timer0Init();
+  91   1              while (1)
+  92   1              {
+  93   2                      if(Music[MusicSelect]!=0xFF)
+  94   2                      {
+  95   3                              FreqSelect = Music[MusicSelect];
+  96   3                              MusicSelect++;
+  97   3                              Delay(SPEED*Music[MusicSelect]);
+  98   3                              MusicSelect++;
+  99   3                              TR0=0;
+ 100   3                              Delay(5);
+ 101   3                              TR0=1;
+ 102   3                      }
+ 103   2                      else
+ 104   2                      {
+ 105   3                              TR0=0;
+ 106   3                              while(1)
+ 107   3                              {
+ 108   4                                      ;
+ 109   4                              }
+ 110   3                      }
+ 111   2              }
+ 112   1      }
+ 113          void Timer0_Routine() interrupt 1
+ 114          {       
+ 115   1              if(FreqTable[FreqSelect]!=0)
+ 116   1              {
+C51 COMPILER V9.54   MAIN                                                                  12/26/2022 13:53:20 PAGE 3   
+
+ 117   2                      TL0=FreqTable[FreqSelect]%256;
+ 118   2                      TH0=FreqTable[FreqSelect]/256;
+ 119   2                      Buzzer_IO=!Buzzer_IO;
+ 120   2              }
+ 121   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    183    ----
+   CONSTANT SIZE    =    124    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,120 @@
+C51 COMPILER V9.54   MAIN                                                                  12/27/2022 20:07:41 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.h>
+   2          #include "LCD1602.h"
+   3          #include "Delay.h"
+   4          #include "At24c02.h"
+   5          #include "Key.h"
+   6          /*
+   7          At24c02 E2PROM
+   8                  存储介质    E2PROM
+   9                  通讯接口    I2C
+  10                  容量          256字节
+  11                  引脚
+  12          I2C总线
+  13                  两个通信线SCL SDA  同步 半双工 带数据应答
+  14          电路规范
+  15                  所有I2C设备的SCL连在一起，SDA连在一起
+  16                  要配置成开漏输出
+  17          起始条件
+  18                  SCL高电平期间 SDA从高电平切换到低电平 SCL拉低
+  19          终止条件
+  20                  SCL高电平期间 SDA从低电平切换到高电平
+  21          发送字节
+  22                  SCL低电平期间 主机将数据位依次放到SDA线上(高位在前) 然后拉高SCL 
+  23                  从机将在SCL高电平期间读取数据位 所以SCL高电平期间SDA不允许有数据变化
+  24          接收字节    
+  25                  SCL低电平期间 主机将数据位依次放到SDA线上(高位在前) 然后拉高SCL
+  26                  主机将在SCL高电平期间读取数据位 所以SCL高电平期间SDA不允许有数据变化       
+  27          发送应答
+  28                  在接收完一个字节后 主机在下一个时钟发送一位数据 数据0表示应答 数据1表示�
+             -��应答
+  29          接收应答
+  30                  在发送完一个字节后 主机在下一个时钟发送一位数据 按断从机是否应答 数据0�
+             -�示应答 数据1表示非应答
+  31          发送一帧数据
+  32                  起始条件 从机地址+W(0) 接收应答 发送字节1 接收应答 发送字节2 ... 接收应答 终
+             -止条件
+  33                  完成任务 向谁发什么
+  34          接收一帧数据
+  35                  起始条件 从机地址+R(1) 接收应答 接收字节1 发送应答 发送字节2 ... 发送非应答 
+             -终止条件
+  36                  完成任务 向谁收什么
+  37          发送、接收一帧数据
+  38                  起始条件 从机地址+W(0) 接收应答 发送字节1 接收应答 发送字节2 ... 接收应答 起
+             -始条件 从机地址+R(1) 接收应答 接收字节1 发送应答 发送字节2 ... 发送非应答 终止条件
+  39                  完成任务 向谁收什么
+  40          */
+  41          
+  42          void main()
+  43          {
+  44   1      //      unsigned char DATA=0;
+  45   1      //      LCD_Init();
+  46   1      //      LCD_ShowString(0,0,"hello");
+  47   1      //      At24c02_WriteByte(0,256);
+  48   1      //      Delay(10);
+  49   1      //      DATA=At24c02_ReadByte(0);
+C51 COMPILER V9.54   MAIN                                                                  12/27/2022 20:07:41 PAGE 2   
+
+  50   1      //      LCD_ShowNum(2,1,DATA,3);
+  51   1              
+  52   1              unsigned char KeyNum=0,num=0;
+  53   1              LCD_Init();
+  54   1              LCD_ShowNum(1,1,num,5);
+  55   1              while (1)
+  56   1              {
+  57   2                      KeyNum=Key();
+  58   2                      if(KeyNum==1)
+  59   2                      {
+  60   3                              num++;
+  61   3                              LCD_ShowNum(1,1,num,5);
+  62   3                      }
+  63   2                      if(KeyNum==2)
+  64   2                      {
+  65   3                              num--;
+  66   3                              LCD_ShowNum(1,1,num,5);
+  67   3                      }
+  68   2                      
+  69   2                      if(KeyNum==3)
+  70   2                      {
+  71   3                              At24c02_WriteByte(0,num%256);
+  72   3                              Delay(10);
+  73   3                              At24c02_WriteByte(1,num/256);
+  74   3                              Delay(10);
+  75   3                              LCD_ShowString(2,1,"write ok!");
+  76   3                              Delay(1000);
+  77   3                              LCD_ShowString(2,1,"         ");
+  78   3                      }
+  79   2                      if(KeyNum==4)
+  80   2                      {
+  81   3                              num=At24c02_ReadByte(0);
+  82   3                              num|=At24c02_ReadByte(1);
+  83   3                              LCD_ShowNum(1,1,num,5);
+  84   3                              LCD_ShowString(2,1,"read ok!");
+  85   3                              Delay(1000);
+  86   3                              LCD_ShowString(2,1,"         ");
+  87   3                      }
+  88   2              }
+  89   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    209    ----
+   CONSTANT SIZE    =     29    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

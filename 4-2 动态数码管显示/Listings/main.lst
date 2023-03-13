@@ -1,0 +1,140 @@
+C51 COMPILER V9.54   MAIN                                                                  12/17/2022 20:58:59 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include <intrins.h>
+   3          
+   4          /*
+   5          数码管显示 共阴极 高电平有效
+   6          
+   7          开发板 P0
+   8          8   7   6   5   4   3   2   1       0 选中
+   9          p07 p06 p05 p04 p03 p02 p01 p00
+  10          p   g   f   e   d   c   b   a       1 选中
+  11          
+  12          位选 P2_7
+  13                  1       打开  
+  14                  0       锁存
+  15          段选 P2_6
+  16                  1       打开  
+  17                  0       锁存
+  18          */
+  19          
+  20          /*
+  21          0x3F,  //"0"
+  22          0x06,  //"1"
+  23          0x5B,  //"2"
+  24          0x4F,  //"3"
+  25          0x66,  //"4"
+  26          0x6D,  //"5"
+  27          0x7D,  //"6"
+  28          0x07,  //"7"
+  29          0x7F,  //"8"
+  30          0x6F,  //"9"
+  31          0x77,  //"A"
+  32          0x7C,  //"B"
+  33          0x39,  //"C"
+  34          0x5E,  //"D"
+  35          0x79,  //"E"
+  36          0x71,  //"F"
+  37          0x76,  //"H"
+  38          0x38,  //"L"
+  39          0x40,  //"-"
+  40          0x00,  //熄灭
+  41          
+  42          */
+  43          /*
+  44                  P2_7 = 1;//打开位选锁存器
+  45                  P0 = 0xFE; //1111 1110 选通第一位数码管
+  46                  P2_7 = 0;//锁存位选数据
+  47          
+  48                  P2_6 = 1;//打开段选锁存器
+  49                  P0 = 0x3F;//0000 0110 显示“1”
+  50                  P2_6 = 0;//锁存段选数据
+  51          */
+  52          //共阴数码管段选表0-9
+  53          unsigned char code tabel[]= {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F};
+  54          
+C51 COMPILER V9.54   MAIN                                                                  12/17/2022 20:58:59 PAGE 2   
+
+  55          void Delay(unsigned int xms)            //@11.0592MHz
+  56          {
+  57   1              while(xms)
+  58   1              {
+  59   2                      unsigned char i, j;
+  60   2      
+  61   2                      _nop_();
+  62   2                      i = 2;
+  63   2                      j = 199;
+  64   2                      do
+  65   2                      {
+  66   3                              while (--j);
+  67   3                      } while (--i);
+  68   2                      xms--;
+  69   2              }
+  70   1      }
+  71          
+  72          // pos 显示位置
+  73          // num 显示数字
+  74          void showNum(int pos,int num)
+  75          {
+  76   1              if((pos<1) && (pos>8) && (num<0) && (num>9))
+  77   1              {
+  78   2                      P2_7=1;
+  79   2                      P0=0XFF; // 1111 1111   清空位选 
+  80   2                      P2_7=0;
+  81   2                      
+  82   2                      P2_6=1;
+  83   2                      P0=0x00;
+  84   2                      P2_6=0;
+  85   2                      return ;
+  86   2              }
+  87   1              
+  88   1              P0=0XFF; // 1111 1111   清空位选 
+  89   1              P2_7 = 1;
+  90   1              P0 = ~(0x01<<(pos-1)); 
+  91   1              P2_7 = 0;
+  92   1      
+  93   1              P0=0x00; // 0000 0000   清空段选 
+  94   1              P2_6 = 1;
+  95   1              P0 = tabel[num];
+  96   1              P2_6 = 0;
+  97   1      }
+  98          
+  99          void main()
+ 100          {
+ 101   1              P0=0x00;
+ 102   1              
+ 103   1              while(1)
+ 104   1              {
+ 105   2                      showNum(1,1);
+ 106   2                      Delay(5);
+ 107   2                      showNum(2,2);
+ 108   2                      Delay(5);
+ 109   2                      showNum(3,3);
+ 110   2                      Delay(5);
+ 111   2              }// while()结束
+ 112   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    153    ----
+C51 COMPILER V9.54   MAIN                                                                  12/17/2022 20:58:59 PAGE 3   
+
+   CONSTANT SIZE    =     10    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

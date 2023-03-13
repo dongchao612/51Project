@@ -1,0 +1,154 @@
+C51 COMPILER V9.54   MAIN                                                                  12/19/2022 18:58:41 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.h>
+   2          #include "timer0.h"
+   3          #include "Key.h" 
+   4          #include <intrins.h>
+   5          
+   6          /*
+   7          定时器 属于内部资源
+   8          
+   9          定时器资源
+  10                  3个 T0、T1、T2
+  11                  
+  12          四种工作模式
+  13                  模式0 13位定时器/计数器
+  14                  模式1 16位定时器/计数器(常用)
+  15                  模式2 8位自动重装模式
+  16                  模式3 两个8位计数器
+  17                  
+  18          模式1
+  19                  【TH,TL】-> [0,65535] 溢出值标志位TF
+  20                  
+  21          时钟
+  22                  系统时钟    晶振周期 11.0592MHz  f=1/T  1us 计数一次
+  23                  C/T 1-C 0-T(*)
+  24                  外部引脚    T0 Pin 外部引脚
+  25          
+  26          中断资源
+  27                  外部中断0、定时器0中断、外部中断1、定时器1中断、串口中断、定时器2中断、�
+             -��部中断2、外部中断3
+  28          
+  29          中断优先级
+  30                  4个
+  31                  
+  32          中断号
+  33                  中断查询序号就是中断号
+  34                  
+  35          定时器和中断系统
+  36                  
+  37          定时器相关寄存器
+  38                  定时器/计数器0和1的相关寄存器
+  39                          TCON
+  40                          TMOD
+  41                          TL0
+  42                          TL1
+  43                          TH0
+  44                          TH1
+  45                  中断寄存器
+  46                          IE
+  47                          IP
+  48          */
+  49          /*
+  50          定时器 T0
+  51          系统频率    11.0592MHz
+  52          定时器               定时器0
+  53          定时长度    1毫秒
+C51 COMPILER V9.54   MAIN                                                                  12/19/2022 18:58:41 PAGE 2   
+
+  54          定时器模式 16位
+  55          定时器时钟 12T
+  56          */
+  57          
+  58          
+  59          void Timer0_Init()
+  60          {
+  61   1              // TMOD 工作模式寄存器
+  62   1              // TMOD=0x01;  // 0000 0001 
+  63   1              TMOD=TMOD&0xF0; // 低四位清零 高四位不变
+  64   1              TMOD=TMOD|0x01;//  最低位置   高四位不变
+  65   1              
+  66   1              // TCON 控制寄存器
+  67   1              TF0=0;  //清除TF0标志
+  68   1              TR0=1;  //定时器0开始计时
+  69   1      
+  70   1              // 设置定时初值
+  71   1              TH0=64535/256;
+  72   1              TL0=64535%256;
+  73   1              
+  74   1              ET0=1;
+  75   1              EA=1;  // 开总中断
+  76   1              PT0=0;
+  77   1      }
+  78          
+  79          
+  80          unsigned char KeyNumber=0,LedMode=0;
+  81          void main()
+  82          {
+  83   1              // Timer0_Init();
+  84   1              Timer0Init();
+  85   1              P1=0xFE;
+  86   1              while (1)
+  87   1              {
+  88   2                      KeyNumber=Key();
+  89   2                      if(KeyNumber!=0)
+  90   2                      {
+  91   3                              if(KeyNumber==1)
+  92   3                              {
+  93   4                                      LedMode++;
+  94   4                                      if(LedMode>=2)
+  95   4                                      {
+  96   5                                              LedMode=0;
+  97   5                                      }
+  98   4                              }
+  99   3                      }
+ 100   2              }// while()结束
+ 101   1      }
+ 102          
+ 103          void Timer0_Routine() interrupt 1
+ 104          {
+ 105   1              static unsigned int T0Count=0; // static静态
+ 106   1              
+ 107   1              TH0=64535/256;
+ 108   1              TL0=64535%256;
+ 109   1              
+ 110   1              T0Count++;
+ 111   1              
+ 112   1              if(T0Count>=1000)
+ 113   1              {
+ 114   2                      T0Count=0;
+ 115   2                      // P1_0=~P1_0; 
+C51 COMPILER V9.54   MAIN                                                                  12/19/2022 18:58:41 PAGE 3   
+
+ 116   2                      if(LedMode==0)
+ 117   2                      {
+ 118   3                              P1=_crol_(P1,1);
+ 119   3                      }
+ 120   2                      if(LedMode==1)
+ 121   2                      {
+ 122   3                              P1=_cror_(P1,1);
+ 123   3                      }
+ 124   2              }       
+ 125   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    139    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

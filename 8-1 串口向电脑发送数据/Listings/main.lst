@@ -1,0 +1,84 @@
+C51 COMPILER V9.54   MAIN                                                                  12/19/2022 20:23:20 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.h>
+   2          #include "Delay.h"
+   3          #include "UART.h"
+   4          /*
+   5          串口通信 互相通信 定时器1
+   6          
+   7          硬件电路
+   8                  发送端TXD    接收端RXD    交叉连接
+   9                  
+  10          电平标准
+  11                  TTL             +5v-1           0v-0
+  12                  RS323   -3~-15v-1       +3~+15-0
+  13                  RS485   +2~+6-1         -2~-6-0
+  14                  
+  15          常见通信协议
+  16                  UART    TXD-RXD                         全双工、异步      点对点通信
+  17                  IIC             SCL-SDA                         半双工、同步      可挂载多个设备   
+  18                  SPI     SCLK-MOSI-MISO-CS       全双工、同步      可挂载多个设备   
+  19                  1-Wire  DQ                                      半双工、异步      可挂载多个设备
+  20                  CAN
+  21                  USB
+  22          相关术语
+  23                  全双工       通信双方可以在同一时刻互相传输数据
+  24                  半双工       通信双方可以互相传输数据。但必须服用一条数据线
+  25                  单工  通信只能乙方发送到另一方，不能反向传输
+  26                  
+  27                  异步  通信双方各自约定通信速率
+  28                  同步  通信双方靠一条时钟线约定通信速率
+  29                  
+  30                  总线  连接各个设备的数据传输线路
+  31                  
+  32          单片机的UART        1个
+  33          工作模式
+  34                  模式0 同步移位寄存器
+  35                  模式1 8位uart，波特率可变(常用)
+  36                  模式2 9位uart，波特率固定
+  37                  模式2 9位uart，波特率可变
+  38                  
+  39          串口参数
+  40                  波特率       串口通信的速率
+  41                  检验位       用于数据校验
+  42                  停止位       用于数据帧间隔
+  43          SCON
+  44                  SM0 SM1   01
+  45          */
+  46          
+  47          unsigned char Sec=0;
+  48          
+  49          void main()
+  50          {
+  51   1              UART_Init();
+  52   1      
+  53   1              while (1)
+  54   1              {
+C51 COMPILER V9.54   MAIN                                                                  12/19/2022 20:23:20 PAGE 2   
+
+  55   2                      UART_SendByte(Sec);
+  56   2                      Sec++;
+  57   2              }
+  58   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     12    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

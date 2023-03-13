@@ -1,0 +1,81 @@
+C51 COMPILER V9.54   MAIN                                                                  12/30/2022 19:45:39 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.h>
+   2          #include "lcd1602.h"
+   3          #include "Delay.h"
+   4          /*
+   5          LCD1602
+   6          显示容量 16*2个字符 每个字符为5*7点阵
+   7          引脚以及应用电路
+   8                  vss             地
+   9                  vdd             电源正极
+  10                  vo              对比调节电压
+  11                  RS              数据/指令选择 1为数据 0为指令
+  12                  RW              读写操作 1为读 0为写
+  13                  E               使能 1为数据有效 下降沿执行命令
+  14                  D0-D7   数据输入输出
+  15                  A               背光灯电源正
+  16                  K               背光灯电源负
+  17          指令
+  18                  0x01    清屏
+  19                  0x02    复位
+  20                  0x06    数据读写操作后 光标自动加一 画面不动
+  21                  0x0c    显示开 光标关 闪烁关
+  22                  0x18    画面向左平移一个字符 但光标不变 移屏
+  23                  0x1c    画面向右平移一个字符 但光标不变 移屏
+  24                  0x38    八位数据接口 两行显示 5*7点阵
+  25                  
+  26          操作流程
+  27                  初始化 
+  28                          发送指令    0x38    八位数据接口两行显示 5*7点阵
+  29                          发送指令    0x0c    显示开 光标关 闪烁关
+  30                          发送指令    0x06    数据读写操作后 光标自动加一 画面不动
+  31                          发送指令    0x01    清屏
+  32                  显示数据
+  33                          发送指令    0x38|AC 设置光标位置
+  34                          发送数据
+  35                          发送数据
+  36          */
+  37          void main()
+  38          {
+  39   1              LCD_Init();
+  40   1              LCD_ShowChar(1,1,0x41);
+  41   1              LCD_ShowString(1,3,"hello");
+  42   1              LCD_ShowNum(1,9,66,2);
+  43   1              LCD_ShowSignedNum(1,12,-88,2);
+  44   1              LCD_ShowHexNum(2,1,0xA5,2);
+  45   1              LCD_ShowBinNum(2,4,0XA5,8);
+  46   1              LCD_ShowChar(2,13,0xDF);
+  47   1              LCD_ShowChar(2,14,'C');
+  48   1              
+  49   1              LCD_ShowString(1,16,"WELCOME TO CHINA!");
+  50   1              while (1)
+  51   1              {
+  52   2                      LCD_WriteCommand(0X18);
+  53   2                      Delay(3000);
+  54   2              }
+C51 COMPILER V9.54   MAIN                                                                  12/30/2022 19:45:39 PAGE 2   
+
+  55   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    126    ----
+   CONSTANT SIZE    =     24    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

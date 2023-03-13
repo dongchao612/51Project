@@ -1,0 +1,70 @@
+C51 COMPILER V9.54   MAIN                                                                  12/23/2022 22:12:12 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.h>
+   2          #include "Delay.h"
+   3          #include "matrixled.h"
+   4          /*
+   5          sfr             特殊功能寄存器
+   6                  sfr P0      = 0x80;
+   7          sbit    特殊位声明
+   8                  sbit P1_0 = 0x90;
+   9                  sbit P1_0 = P^1;
+  10          
+  11          */
+  12          unsigned char code Animation[]={
+  13                  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+  14                  0xFF,0x08,0x08,0x08,0xFF,0x00,0x0E,0x15,
+  15                  0x15,0x15,0x08,0x00,0x7E,0x01,0x02,0x00,
+  16                  0x7E,0x01,0x02,0x00,0x0E,0x11,0x11,0x0E,
+  17                  0x00,0x7D,0x00,0x00,0x00,0x00,0x00,0x00,
+  18                  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+  19          };
+  20          
+  21          
+  22          void main()
+  23          {       
+  24   1              unsigned char i,Offset=0,Count=0;
+  25   1              while(1)
+  26   1              {
+  27   2                      for(i=0;i<=8;i++)
+  28   2                      {
+  29   3                              MatrixLED_ShowColumn(i,Animation[i+Offset]);
+  30   3                      }
+  31   2                      Count++; // Count控制刷新频率
+  32   2                      if(Count>100)
+  33   2                      {
+  34   3                              Count=0;
+  35   3                              Offset++;
+  36   3                              // Offset+=8;// 实现逐帧动画
+  37   3                              if(Offset>32)
+  38   3                              {
+  39   4                                      Offset=0;
+  40   4                              }
+  41   3                      }
+  42   2              }       
+  43   1      }
+  44          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     57    ----
+   CONSTANT SIZE    =     48    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+C51 COMPILER V9.54   MAIN                                                                  12/23/2022 22:12:12 PAGE 2   
+
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

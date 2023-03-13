@@ -1,0 +1,70 @@
+C51 COMPILER V9.54   MAIN                                                                  12/30/2022 20:25:11 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.h>
+   2          /*
+   3          直流电机
+   4                  永磁体       线圈  转换器
+   5          其他电机
+   6                  步进电机    舵机  无刷电机    空心杯电机
+   7          PWM 脉通宽度调制
+   8                  频率=1/Ts     占空比Ton/Ts 精度占空比变化步距 1% 2%...
+   9                  ____--____--____
+  10          */
+  11          sbit LED=P1^0;
+  12          void Delay(unsigned char t)
+  13          {
+  14   1              while(t--);
+  15   1      }
+  16          #define PWM 100
+  17          void main()
+  18          {
+  19   1              unsigned char Time,i;
+  20   1              while (1)
+  21   1              {
+  22   2                      for(Time=0;Time<PWM;Time++)
+  23   2                      {
+  24   3                              for(i=0;i<20;i++)
+  25   3                              {
+  26   4                                      
+  27   4                                      LED=0;
+  28   4                                      Delay(Time);
+  29   4                                      LED=1;
+  30   4                                      Delay(PWM-Time);
+  31   4                              }
+  32   3                      }
+  33   2                      for(Time=PWM;Time>0;Time--)
+  34   2                      {
+  35   3                              for(i=0;i<20;i++)
+  36   3                              {       
+  37   4                                      LED=0;
+  38   4                                      Delay(Time);
+  39   4                                      LED=1;
+  40   4                                      Delay(PWM-Time);
+  41   4                              }
+  42   3                      }
+  43   2              }
+  44   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     56    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+C51 COMPILER V9.54   MAIN                                                                  12/30/2022 20:25:11 PAGE 2   
+
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

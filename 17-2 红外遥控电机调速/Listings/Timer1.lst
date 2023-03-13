@@ -1,0 +1,74 @@
+C51 COMPILER V9.54   TIMER1                                                                12/31/2022 21:53:26 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE TIMER1
+OBJECT MODULE PLACED IN .\Objects\Timer1.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Timer1.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\Ti
+                    -mer1.lst) OBJECT(.\Objects\Timer1.obj)
+
+line level    source
+
+   1          #include <REGX52.h>
+   2          #include "timer0.h"
+   3          
+   4          /**
+   5             * @brief     定时器1初始化 1毫秒@11.0592MHz
+   6             * @param     无
+   7             * @retval    无
+   8             */
+   9          void Timer1_Init(void)          //1毫秒@11.0592MHz
+  10          {
+  11   1              TMOD&=0x0F;             //设置定时器模式
+  12   1              TMOD|=0x10;             //设置定时器模式
+  13   1      
+  14   1              TL1 = 0xA4;             //设置定时初值
+  15   1              TH1 = 0xFF;             //设置定时初值
+  16   1              
+  17   1              TF1=0;                  //清除TF0标志
+  18   1              TR1=1;                  //定时器0开始计时
+  19   1              
+  20   1      
+  21   1              ET1=1;
+  22   1              EA=1;                   // 开总中断
+  23   1              
+  24   1              PT1=0;
+  25   1      }
+  26          
+  27          /**
+  28             * @brief 定时器中断函数模板
+  29             * @param
+  30             * @retval
+  31             */
+  32          /*
+  33          void Timer1_Routine() interrupt 2
+  34          {
+  35                  static unsigned int T0Count=0; // static静态
+  36                  
+  37                  TL1=0x66;
+  38                  TH1=0xFC;
+  39                  
+  40                  T1Count++;
+  41                  
+  42                  if(T1Count>=1000)
+  43                  {
+  44                          T1Count=0;
+  45                          P1_0=~P1_0; 
+  46                  }       
+  47          }
+  48          */
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     23    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+C51 COMPILER V9.54   TIMER1                                                                12/31/2022 21:53:26 PAGE 2   
+
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

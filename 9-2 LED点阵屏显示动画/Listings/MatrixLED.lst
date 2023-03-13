@@ -1,0 +1,89 @@
+C51 COMPILER V9.54   MATRIXLED                                                             12/23/2022 22:12:12 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MATRIXLED
+OBJECT MODULE PLACED IN .\Objects\MatrixLED.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE MatrixLED.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings
+                    -\MatrixLED.lst) OBJECT(.\Objects\MatrixLED.obj)
+
+line level    source
+
+   1          #include <REGX52.h>
+   2          #include <intrins.h>
+   3          
+   4          sbit RCK=P3^5;  //移位寄存器时钟
+   5          sbit SCK=P3^6;  //输出锁存器时钟
+   6          sbit SER=P3^4;  //串行数据口
+   7          
+   8          void _74HC595_WriteByte(unsigned char Byte)
+   9          {
+  10   1              unsigned char i;
+  11   1              SCK=0; //输出锁存器时钟
+  12   1              // Byte= 11000110
+  13   1              for(i=0;i<8;i++)
+  14   1              {       
+  15   2                      RCK=0; //移位寄存器时钟
+  16   2                      if(Byte & 0x01)//发送1
+  17   2                              SER = 1;
+  18   2                      else              //发送0
+  19   2                              SER = 0;
+  20   2                      RCK = 1;        //拉高移位寄存器时钟，数据移位
+  21   2                      Byte >>= 1;//数据右移                 // 移进去8位
+  22   2              }
+  23   1              SCK=1;
+  24   1      }
+  25          
+  26          /**
+  27            * @brief  LED点阵屏显示一列数据
+  28            * @param  Column 要选择的列，范围：0~7，0在最左边
+  29            * @param  Data 选择列显示的数据，高位在上，1为亮，0为灭
+  30            * @retval 无
+  31            */
+  32          void MatrixLED_ShowColumn(unsigned char Column, unsigned char Data)
+  33          {
+  34   1              unsigned char i,LIE,HANG;
+  35   1              SCK=0; 
+  36   1              LIE=~(0x01<<Column);
+  37   1              HANG=Data;
+  38   1              
+  39   1              for(i=0;i<8;i++)
+  40   1              {       
+  41   2                      RCK=0; //移位寄存器时钟
+  42   2                      if(LIE & 0x01)//发送1
+  43   2                              SER = 1;
+  44   2                      else              //发送0
+  45   2                              SER = 0;
+  46   2                      RCK = 1;        //拉高移位寄存器时钟，数据移位
+  47   2                      LIE >>= 1;//数据右移                 // 移进去8位
+  48   2              }
+  49   1              for(i=0;i<8;i++)
+  50   1              {       
+  51   2                      RCK=0; //移位寄存器时钟
+  52   2                      if(HANG & 0x01)//发送1
+  53   2                              SER = 1;
+  54   2                      else              //发送0
+C51 COMPILER V9.54   MATRIXLED                                                             12/23/2022 22:12:12 PAGE 2   
+
+  55   2                              SER = 0;
+  56   2                      RCK = 1;        //拉高移位寄存器时钟，数据移位
+  57   2                      HANG >>= 1;//数据右移                 // 移进去8位
+  58   2              }
+  59   1              
+  60   1              SCK=1;
+  61   1              
+  62   1              
+  63   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     95    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
